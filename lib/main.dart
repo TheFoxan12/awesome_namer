@@ -200,7 +200,6 @@ class FavoritesPage extends StatelessWidget {
                 child: Text("Nothing to show !")
             ) :
             ListView.builder(
-              shrinkWrap: true,
               itemCount: favorites.length,
               itemBuilder: (context, idx) {
                 var element = favorites[idx];
