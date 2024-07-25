@@ -174,30 +174,7 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
-
-    var elements = <ListTile>[];
-    for (var element in appState.favorites) {
-      elements.add(
-        ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(element.asLowerCase),
-            onTap: () {
-              Clipboard.setData(ClipboardData(text: element.asLowerCase));
-              final snackBar = SnackBar(
-                content: const Text('Copied to clipboard !'),
-                duration: Duration(seconds: 1),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
-            trailing: IconButton(
-              icon: Icon(Icons.remove_circle_outline),
-              onPressed: () {
-                appState.removeFavorite(element);
-                },
-            )
-        ),
-      );
-    }
+    var favorites = appState.favorites;
 
     return SafeArea(
       child: Column(
@@ -218,13 +195,34 @@ class FavoritesPage extends StatelessWidget {
             ],
           ),
           Expanded (
-            child: elements.isEmpty ?
+            child: favorites.isEmpty ?
             Center(
                 child: Text("Nothing to show !")
             ) :
-            ListView(
+            ListView.builder(
               shrinkWrap: true,
-              children: elements,
+              itemCount: favorites.length,
+              itemBuilder: (context, idx) {
+                var element = favorites[idx];
+                return ListTile(
+                    leading: Icon(Icons.favorite),
+                    title: Text(element.asLowerCase),
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: element.asLowerCase));
+                      final snackBar = SnackBar(
+                        content: const Text('Copied to clipboard !'),
+                        duration: Duration(seconds: 1),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      },
+                    trailing: IconButton(
+                      icon: Icon(Icons.remove_circle_outline),
+                      onPressed: () {
+                        appState.removeFavorite(element);
+                        },
+                    )
+                );
+              },
             )
           ),
         ],
